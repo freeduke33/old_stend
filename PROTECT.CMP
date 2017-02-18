@@ -1,0 +1,54 @@
+/*----------------------------------------------+
+ | Алгоритмическая часть системы защиты от      |
+ | несанкционированного копирования             |
+ +----------------------------------------------+
+ | Предопределения:                             |
+ |                                              |
+ |   PROTECTION логичестая переменная любого    |
+ |         типа после выполнения                |
+ |         == 1 нормальное выполнение           |
+ |         == 0 незаконная копия                |
+ |   PASSWORD указатель на массив unsigned int  |
+ |         элементов для хранения и дальнейшего |
+ |         использования,его длина = __LEN_p    |
+ +----------------------------------------------*/
+
+
+#ifndef PROTECTION || PASSWORD
+# ifndef PROTECTION
+#  error PROTECTION не определена перед вызовом
+# else
+#  error PASSWORD не определена перед вызовом
+# endif
+#else
+ {
+#include "protect.h"
+
+
+  unsigned long Kw,k,E,Mw,m,D,N;
+  unsigned int Beg;
+  unsigned char ID[__LEN_p],T[__LEN_p];
+  unsigned int i;
+#  define IDENTIFICATOR ID
+#  define BEGIN_NUMBER Beg
+#  include "protect.hdw"
+  srand(Beg);
+
+  for(i=0;i<__LEN_p;i++)
+    {
+    N=Lrand(__MAX_p,__MIN_p);
+    Kw=(2*__MAX_p-(PASSWORD[i]^i))/(2*N+1);
+    k=Lrand(Kw+1,0);
+    E=(PASSWORD[i]^i)+k*(2*N+1);
+    Mw=((4*__MAX_p*__MAX_p)/E-N)/(2*N+1);
+    m=Lrand(Mw+1,0);
+    D=2*k*N*N+(k+2*(PASSWORD[i]^i)*m+(PASSWORD[i]^i))*N+(PASSWORD[i]^i)*m;
+    T[i]=2*N- mod(D-1,2*N+1);
+    }
+  PROTECTION=1;
+  for(i=0;i<__LEN_p;i++) if(T[i]!=ID[i]) PROTECTION=0;
+ }
+# undef mod
+# undef PASSWORD
+# undef PROTECTION
+#endif

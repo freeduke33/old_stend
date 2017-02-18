@@ -1,0 +1,14 @@
+dirinfo
+*.c
+*.h
+*.asm
+*.bat
+*.prj
+alarm.inc
+protect.*
+moskow\*.c
+moskow\*.asm
+lib\*.h
+lib\_grf.lib
+bin\prote.exe
+stend.mak

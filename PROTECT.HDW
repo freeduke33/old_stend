@@ -1,0 +1,33 @@
+/*----------------------------------------------+
+ | Адаптивная часть системы защиты от           |
+ | несанкционированного копирования             |
+ +----------------------------------------------+
+ | Предопределения:                             |
+ |    IDENTIFICATOR указатель на строку для     |
+ |           сохранения идентификационного кода |
+ |           ЭВМ, длина = __LEN_p               |
+ |           тип : unsigned char[__LEN_p]       |
+ |    BEGIN_NUMBER переменная для хранения      |
+ |           дополнительного кода идентификации |
+ |           тип : unsigned int                 |
+ |                                              |
+ +----------------------------------------------*/
+
+#ifndef IDENTIFICATOR
+# error IDENTIFICATOR не определен
+#else
+# ifndef BEGIN_NUMBER
+#  error BEGIN_NUMBER не определен
+# endif
+#endif
+{
+#include "dos.h"
+ unsigned int far *Ptr=MK_FP(0xf000,0xfff4);
+ unsigned char far *PtrC=(void *)Ptr;
+ unsigned int i;
+
+ for(i=0;i<__LEN_p;i++) IDENTIFICATOR[i]=PtrC[i];
+ BEGIN_NUMBER=Ptr[2]^Ptr[5];
+}
+#undef IDENTIFICATOR
+#undef BEGIN_NUMBER
